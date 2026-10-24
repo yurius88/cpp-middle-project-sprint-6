@@ -21,7 +21,6 @@ private:
     std::mutex mutex_;
     std::queue<std::function<void()>> queue_;
     std::counting_semaphore<> free_slots_;
-    std::counting_semaphore<> used_slots_;
 };
 
 }  // namespace dispatcher::queue

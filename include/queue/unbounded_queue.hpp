@@ -8,7 +8,7 @@ namespace dispatcher::queue {
 
 class UnboundedQueue : public IQueue {
 public:
-    explicit UnboundedQueue(int capacity);
+    explicit UnboundedQueue();
 
     void push(std::function<void()> task) override;
 

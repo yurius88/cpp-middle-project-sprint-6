@@ -17,7 +17,7 @@ private:
     void worker_loop();
 
     std::shared_ptr<queue::PriorityQueue> queue_;
-    std::vector<std::thread> workers_;
+    std::vector<std::jthread> workers_;
 };
 
 }  // namespace dispatcher::thread_pool

@@ -12,7 +12,7 @@ PriorityQueue::PriorityQueue(const std::map<TaskPriority, QueueOptions> &options
             }
             queues_.emplace(priority, std::make_unique<BoundedQueue>(*queue_options.capacity));
         } else {
-            queues_.emplace(priority, std::make_unique<UnboundedQueue>(0));
+            queues_.emplace(priority, std::make_unique<UnboundedQueue>());
         }
     }
 }
@@ -21,14 +21,19 @@ void PriorityQueue::push(TaskPriority priority, std::function<void()> task) {
     IQueue *queue = nullptr;
     {
         std::lock_guard lock(mutex_);
+        if (stopped_) {
+            throw std::runtime_error("push to stopped PriorityQueue");
+        }
         auto it = queues_.find(priority);
         if (it == queues_.end()) {
             throw std::invalid_argument("unknown task priority");
         }
         queue = it->second.get();
     }
-    // потенциально блокирующий push вне mutex_: избегаем инверсии порядка блокировок
+
     queue->push(std::move(task));
+
+    std::lock_guard lock(mutex_);
     cv_.notify_all();
 }
 
