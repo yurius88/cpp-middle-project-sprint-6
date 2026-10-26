@@ -16,8 +16,6 @@ public:
     explicit PriorityQueue(const std::map<TaskPriority, QueueOptions> &options);
 
     void push(TaskPriority priority, std::function<void()> task);
-    // block on pop until shutdown is called
-    // after that return std::nullopt on empty queue
     std::optional<std::function<void()>> pop();
 
     void shutdown();

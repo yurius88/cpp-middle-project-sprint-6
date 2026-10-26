@@ -2,7 +2,7 @@
 
 namespace dispatcher::queue {
 
-UnboundedQueue::UnboundedQueue(int /*capacity*/) {}
+UnboundedQueue::UnboundedQueue() {}
 
 void UnboundedQueue::push(std::function<void()> task) {
     std::lock_guard lock(mutex_);

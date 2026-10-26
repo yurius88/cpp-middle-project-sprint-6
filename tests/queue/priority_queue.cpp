@@ -41,7 +41,7 @@ TEST(PriorityQueueTest, PopBlocksUntilTaskArrives) {
     PriorityQueue queue(options);
 
     bool popped = false;
-    std::thread consumer([&]() {
+    std::jthread consumer([&]() {
         auto task = queue.pop();
         if (task.has_value()) {
             (*task)();
@@ -71,4 +71,14 @@ TEST(PriorityQueueTest, ShutdownUnblocksPop) {
     queue.shutdown();
     consumer.join();
     EXPECT_FALSE(result.has_value());
+}
+
+TEST(PriorityQueueTest, PushAfterShutdownThrows) {
+    std::map<TaskPriority, QueueOptions> options = {
+        {TaskPriority::High, {.bounded = false, .capacity = std::nullopt}},
+        {TaskPriority::Normal, {.bounded = false, .capacity = std::nullopt}},
+    };
+    PriorityQueue queue(options);
+    queue.shutdown();
+    EXPECT_THROW(queue.push(TaskPriority::Normal, []() {}), std::runtime_error);
 }

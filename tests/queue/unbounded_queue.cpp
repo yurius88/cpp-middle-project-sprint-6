@@ -3,7 +3,7 @@
 #include "queue/unbounded_queue.hpp"
 
 TEST(UnboundedQueueTest, PushAndPopFifo) {
-    dispatcher::queue::UnboundedQueue queue(0);
+    dispatcher::queue::UnboundedQueue queue;
     int counter = 0;
     queue.push([&counter]() { counter += 1; });
     queue.push([&counter]() { counter += 10; });
@@ -20,12 +20,12 @@ TEST(UnboundedQueueTest, PushAndPopFifo) {
 }
 
 TEST(UnboundedQueueTest, EmptyQueueReturnsNullopt) {
-    dispatcher::queue::UnboundedQueue queue(0);
+    dispatcher::queue::UnboundedQueue queue;
     EXPECT_FALSE(queue.try_pop().has_value());
 }
 
 TEST(UnboundedQueueTest, NoCapacityLimit) {
-    dispatcher::queue::UnboundedQueue queue(0);
+    dispatcher::queue::UnboundedQueue queue;
     const int task_count = 1000;
     for (int i = 0; i < task_count; ++i) {
         queue.push([]() {});
